@@ -170,8 +170,8 @@ body::before {
 .meta-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin-bottom: 22px;
+    gap: 12px;
+    margin-bottom: 28px;
 }
 .meta-item {
     background: rgba(255, 255, 255, 0.03);
@@ -230,22 +230,38 @@ h3.sub {
     gap: 10px;
     border: none;
     background: var(--grad);
+    background-size: 200% 200%;
+    background-position: 0% 50%;
     color: #fff;
     font-family: inherit;
     font-weight: 600;
     font-size: 1rem;
-    padding: 14px 30px;
+    padding: 15px 32px;
     border-radius: 100px;
     cursor: pointer;
-    margin-top: 22px;
+    margin-top: 26px;
     box-shadow: 0 8px 30px rgba(255, 46, 136, 0.4);
-    transition: transform 0.25s, box-shadow 0.25s;
+    transition: transform 0.4s cubic-bezier(.34,1.56,.64,1), box-shadow 0.4s, background-position 0.5s;
+    position: relative;
+    overflow: hidden;
+}
+.watch-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.3), transparent 70%);
+    transform: translateX(-130%);
+    transition: transform 0.6s;
 }
 .watch-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 40px rgba(255, 46, 136, 0.6);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 14px 44px rgba(255, 46, 136, 0.65);
+    background-position: 100% 50%;
 }
-.watch-btn svg { width: 20px; height: 20px; fill: #fff; }
+.watch-btn:hover::after { transform: translateX(130%); }
+.watch-btn:active { transform: translateY(-1px) scale(0.97); }
+.watch-btn svg { width: 20px; height: 20px; fill: #fff; transition: transform 0.4s cubic-bezier(.34,1.56,.64,1); }
+.watch-btn:hover svg { transform: scale(1.2); }
 
 /* ===== GALLERY ===== */
 .gallery {
@@ -275,43 +291,78 @@ h3.sub {
 .dl-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 14px;
 }
 .dl-btn {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     border: none;
     font-family: inherit;
     font-weight: 600;
     font-size: 0.98rem;
     color: #fff;
-    padding: 16px 22px;
-    border-radius: 14px;
+    padding: 18px 24px;
+    border-radius: 16px;
     cursor: pointer;
-    transition: transform 0.25s, box-shadow 0.25s, filter 0.25s;
     position: relative;
     overflow: hidden;
+    isolation: isolate;
+    background-size: 200% 200%;
+    background-position: 0% 50%;
+    transition: transform 0.4s cubic-bezier(.34,1.56,.64,1), box-shadow 0.4s, background-position 0.5s, filter 0.3s;
 }
-.dl-btn .icon { width: 22px; height: 22px; flex-shrink: 0; fill: #fff; }
-.dl-btn .lbl { flex: 1; text-align: left; }
+.dl-btn .icon { width: 22px; height: 22px; flex-shrink: 0; fill: #fff; transition: transform 0.4s cubic-bezier(.34,1.56,.64,1); z-index: 1; }
+.dl-btn .lbl { flex: 1; text-align: left; z-index: 1; }
 .dl-btn .src { font-size: 0.75rem; opacity: 0.8; font-weight: 400; }
+
+/* shine sweep */
 .dl-btn::after {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.25), transparent 70%);
-    transform: translateX(-120%);
-    transition: transform 0.6s;
+    background: linear-gradient(120deg, transparent 35%, rgba(255,255,255,0.28), transparent 65%);
+    transform: translateX(-130%);
+    transition: transform 0.7s cubic-bezier(.2,.8,.2,1);
+    z-index: 0;
 }
-.dl-btn:hover::after { transform: translateX(120%); }
-.dl-btn:hover { transform: translateY(-3px); filter: brightness(1.1); }
 
-.dl-primary { background: linear-gradient(135deg, #ff2e88, #ff5ca8); box-shadow: 0 8px 30px rgba(255,46,136,0.35); }
-.dl-backup  { background: linear-gradient(135deg, #7b2ff7, #5a8cff); box-shadow: 0 8px 30px rgba(123,47,247,0.35); }
-.dl-taniya  { background: linear-gradient(135deg, #24292e, #444c56); box-shadow: 0 8px 30px rgba(80,80,90,0.4); border: 1px solid rgba(255,255,255,0.12); }
+/* hover state */
+.dl-btn:hover {
+    transform: translateY(-5px) scale(1.015);
+    background-position: 100% 50%;
+    filter: brightness(1.12);
+}
+.dl-btn:hover::after { transform: translateX(130%); }
+.dl-btn:hover .icon { transform: scale(1.18) translateY(-2px); }
 
-.dl-btn:active { transform: translateY(-1px) scale(0.99); }
+/* active / press */
+.dl-btn:active { transform: translateY(-1px) scale(0.96); transition: transform 0.12s; }
+.dl-btn:active .icon { transform: scale(0.85); }
+
+/* ripple */
+.dl-btn .ripple, .watch-btn .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(0);
+    animation: rippleGo 0.6s ease-out;
+    pointer-events: none;
+    z-index: 0;
+}
+@keyframes rippleGo {
+    to { transform: scale(2.6); opacity: 0; }
+}
+
+/* per-button gradients + glow */
+.dl-primary { background-image: linear-gradient(135deg, #ff2e88, #ff5ca8); box-shadow: 0 8px 28px rgba(255,46,136,0.35); }
+.dl-primary:hover { box-shadow: 0 14px 44px rgba(255,46,136,0.6); }
+
+.dl-backup { background-image: linear-gradient(135deg, #7b2ff7, #5a8cff); box-shadow: 0 8px 28px rgba(123,47,247,0.35); }
+.dl-backup:hover { box-shadow: 0 14px 44px rgba(123,47,247,0.6); }
+
+.dl-taniya { background-image: linear-gradient(135deg, #24292e, #444c56); box-shadow: 0 8px 28px rgba(80,80,90,0.4); border: 1px solid rgba(255,255,255,0.14); }
+.dl-taniya:hover { box-shadow: 0 14px 44px rgba(120,120,140,0.5); }
 
 #count {
     text-align: center;
@@ -538,6 +589,21 @@ function startCountdown(url, label) {
         }
     }, 1000);
 }
+
+// ===== RIPPLE EFFECT =====
+document.querySelectorAll(".dl-btn, .watch-btn").forEach(btn => {
+    btn.addEventListener("pointerdown", function (e) {
+        const r = this.getBoundingClientRect();
+        const span = document.createElement("span");
+        span.className = "ripple";
+        const size = Math.max(r.width, r.height);
+        span.style.width = span.style.height = size + "px";
+        span.style.left = (e.clientX - r.left - size / 2) + "px";
+        span.style.top = (e.clientY - r.top - size / 2) + "px";
+        this.appendChild(span);
+        setTimeout(() => span.remove(), 600);
+    });
+});
 
 // ===== SCROLL REVEAL =====
 const io = new IntersectionObserver((entries) => {
